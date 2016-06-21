@@ -13,6 +13,10 @@ namespace Onyx.Controls.Xamarin
 	{
 		protected bool UserTap = false;
 
+		public static void Init()
+		{
+		}
+
 		#region Bindable Properties
 		public static readonly BindableProperty ItemTemplateProperty =
 			BindableProperty.Create(nameof(ItemTemplate), typeof(DataTemplate), typeof(WrapLayout), null, propertyChanged: ItemTemplatePropertyChanged);
