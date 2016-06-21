@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Xamarin.Forms;
 
+/*
+ * Thank you Jason Smith for the base setup for this layout.
+ */
+
 namespace Onyx.Controls.Xamarin
 {
 	public class WrapLayout : Layout<View>
