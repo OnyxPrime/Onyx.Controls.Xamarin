@@ -11,11 +11,11 @@ namespace Onyx.Controls.Xamarin
 {
 	public class WrapLayout : Layout<View>
 	{
-		protected bool UserTap = false;
-
 		public static void Init()
 		{
 		}
+
+		static bool userTap = false;
 
 		#region Bindable Properties
 		public static readonly BindableProperty ItemTemplateProperty =
@@ -38,17 +38,27 @@ namespace Onyx.Controls.Xamarin
 		static void SelectedItemPropertyChanged(BindableObject bindable, object oldValue, object newValue)
 		{
 			// Need to handle the scenario where the SelectedItem property is changed programmatically.
-			var self = (WrapLayout)bindable;
-			if (!self.UserTap)
-				self.SelectedItemChanged(oldValue, newValue);
-			else
-				self.UserTap = false;
+			if (!userTap)
+			{
+				if (SelectedItemView != null) SelectedItemView = null;
+				var self = (WrapLayout)bindable;
+				for (int i = 0; i < self.Children.Count; i++)
+				{
+					var x = self.Children[i] as WrapLayoutSelectedTemplate;
+					if (newValue != null && newValue.Equals(x.BindingContext))
+					{
+						SelectedItemView = x;
+						SelectedItemView.IsSelected = true;
+					}
+				}
+				userTap = false;
+			}
 		}
 
 		public object SelectedItem
 		{
 			get { return (object)GetValue(SelectedItemProperty); }
-			set { SelectedItemChanged(SelectedItem, value); SetValue(SelectedItemProperty, (object)value); }
+			set { SetValue(SelectedItemProperty, (object)value); }
 		}
 
 		protected void SelectedItemChanged(object oldValue, object newValue)
@@ -56,11 +66,18 @@ namespace Onyx.Controls.Xamarin
 			for (int i = 0; i < this.Children.Count; i++)
 			{
 				var x = this.Children[i] as WrapLayoutSelectedTemplate;
-				if (newValue.Equals(x.BindingContext))
+				if (newValue != null && newValue.Equals(x.BindingContext))
 					x.IsSelected = !x.IsSelected;
 				else if (x.IsSelected)
 					x.IsSelected = false;
 			}
+		}
+
+		static WrapLayoutSelectedTemplate selectedItemView = null;
+		static WrapLayoutSelectedTemplate SelectedItemView
+		{
+			get { return selectedItemView; }
+			set { selectedItemView = value; }
 		}
 
 		public static readonly BindableProperty SpacingProperty =
@@ -132,7 +149,7 @@ namespace Onyx.Controls.Xamarin
 			{
 				var context = items.ElementAt(i);
 				var view = CreateViewFromTemplate(template, context);
-				view.GestureRecognizers.Add(new TapGestureRecognizer() { Command = new Command(layout.ItemTapped), CommandParameter = context } );
+				view.GestureRecognizers.Add(new TapGestureRecognizer() { Command = new Command(layout.ItemTapped), CommandParameter = view } );
 				layout.Children.Add(view);
 			}
 		}
@@ -157,8 +174,22 @@ namespace Onyx.Controls.Xamarin
 
 		private void ItemTapped(object arg)
 		{
-			UserTap = true;
-			SelectedItem = arg; 
+			userTap = true;
+			var view = arg as WrapLayoutSelectedTemplate;
+			var context = view.BindingContext;
+			if (SelectedItem != null && SelectedItem.Equals(context))
+			{
+				SelectedItemView.IsSelected = false;
+				SelectedItem = null;
+				selectedItemView = null;
+			}
+			else
+			{
+				if (SelectedItemView != null) SelectedItemView.IsSelected = false;
+				SelectedItem = context;
+				SelectedItemView = view;
+				SelectedItemView.IsSelected = true;
+			}
 		}
 
 		private double GetMaxRowWidth(IEnumerable<Row> rows)
