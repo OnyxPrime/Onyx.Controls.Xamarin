@@ -19,7 +19,8 @@ xmlns:custom="clr-namespace:Onyx.Controls.Xamarin;assembly=Onyx.Controls.Xamarin
 	</custom:WrapLayout.ItemTemplate>
 </custom:WrapLayout>
 ```
-On __iOS__**
+On **iOS**
+
 ```C#
 AppDelegate.cs
 
