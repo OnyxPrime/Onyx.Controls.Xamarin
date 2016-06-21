@@ -19,3 +19,17 @@ xmlns:custom="clr-namespace:Onyx.Controls.Xamarin;assembly=Onyx.Controls.Xamarin
 	</custom:WrapLayout.ItemTemplate>
 </custom:WrapLayout>
 ```
+On __iOS__**
+```C#
+AppDelegate.cs
+
+using Onyx.Controls.Xamarin
+
+public override bool FinishedLaunching(UIApplication app, NSDictionary options)
+{
+	Xamarin.Forms.Init();//platform specific init
+	WrapLayout.Init();
+	...
+}
+```
+You must do this AFTER you call Xamarin.Forms.Init();
