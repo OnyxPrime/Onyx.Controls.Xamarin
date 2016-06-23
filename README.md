@@ -7,6 +7,12 @@ Please let us know what's missing and what would make your life easier and we'll
 Our Current Control Suite
 -----
 * WrapLayout - Inspired by Jason Smith's [custom layouts](https://evolve.xamarin.com/session/56e20f83bad314273ca4d81c) talk at Xamarin Evolve 2016
+* More to come... Let me know what you'd like to see!
+
+
+Usage
+-----
+* WrapLayout
 
 ```XAML
 xmlns:custom="clr-namespace:Onyx.Controls.Xamarin;assembly=Onyx.Controls.Xamarin"
